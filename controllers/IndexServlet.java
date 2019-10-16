@@ -32,7 +32,8 @@ public class IndexServlet extends HttpServlet {
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         EntityManager em = DBUtil.createEntityManager();
 
         //開くページ数を取得
@@ -43,14 +44,14 @@ public class IndexServlet extends HttpServlet {
             // TODO: handle exception
         }
 
-        //最大件数と開始位置を指定してメッセージを取得
+        //最大件数と開始位置を指定してタスクを取得
         List<Task> tasks = em.createNamedQuery("getAllTasks", Task.class)
                 .setFirstResult(15 * (page - 1))
                 .setMaxResults(15)
                 .getResultList();
 
-      //全件数を取得
-        long tasks_count = (long)em.createNamedQuery("getTasksCount", Long.class)
+        //全件数を取得
+        long tasks_count = (long) em.createNamedQuery("getTasksCount", Long.class)
                 .getSingleResult();
 
         em.close();
@@ -61,13 +62,10 @@ public class IndexServlet extends HttpServlet {
 
         //フラッシュメッセージがセッションスコープにセットされていたら
         //リクエストスコープに保存する(セッションスコープからは削除)
-        if(request.getSession().getAttribute("flush") != null) {
+        if (request.getSession().getAttribute("flush") != null) {
             request.setAttribute("flush", request.getSession().getAttribute("flush"));
             request.getSession().removeAttribute("flush");
         }
-
-
-
 
         RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/tasks/index.jsp");
         rd.forward(request, response);
